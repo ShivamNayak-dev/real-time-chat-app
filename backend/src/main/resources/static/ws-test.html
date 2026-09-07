@@ -11,6 +11,10 @@
 
 <p id="status">Disconnected</p>
 
+<button onclick="sendMessage()">Send Message</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.1.1/bundles/stomp.umd.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.1.1/bundles/stomp.umd.min.js"></script>
 
 <script>
@@ -23,8 +27,17 @@
             brokerURL: 'ws://localhost:8082/ws',
 
             onConnect: () => {
+
                 document.getElementById("status").innerText =
                     "Connected";
+
+                client.subscribe('/topic/chat', (message) => {
+
+                    console.log("Received:", message.body);
+
+                });
+
+                console.log("Subscribed to /topic/chat");
             },
 
             onWebSocketError: (error) => {
@@ -37,6 +50,15 @@
         });
 
         client.activate();
+    }
+
+    function sendMessage() {
+
+        client.publish({
+            destination: '/app/chat.send',
+            body: 'Hello from WebSocket!'
+        });
+
     }
 
 </script>
