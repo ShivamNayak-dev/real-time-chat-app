@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+
+<h2>WebSocket Test</h2>
+
+<button onclick="connect()">Connect</button>
+
+<p id="status">Disconnected</p>
+
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.1.1/bundles/stomp.umd.min.js"></script>
+
+<script>
+
+    let client;
+
+    function connect() {
+
+        client = new StompJs.Client({
+            brokerURL: 'ws://localhost:8082/ws',
+
+            onConnect: () => {
+                document.getElementById("status").innerText =
+                    "Connected";
+            },
+
+            onWebSocketError: (error) => {
+                console.error("WebSocket error:", error);
+            },
+
+            onStompError: (frame) => {
+                console.error("STOMP error:", frame);
+            }
+        });
+
+        client.activate();
+    }
+
+</script>
+
+</body>
+</html>
