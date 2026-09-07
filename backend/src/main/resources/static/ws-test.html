@@ -15,8 +15,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.1.1/bundles/stomp.umd.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.1.1/bundles/stomp.umd.min.js"></script>
-
 <script>
 
     let client;
@@ -31,13 +29,21 @@
                 document.getElementById("status").innerText =
                     "Connected";
 
-                client.subscribe('/topic/chat', (message) => {
+                console.log("WebSocket connected");
 
-                    console.log("Received:", message.body);
+                client.subscribe(
+                    '/topic/conversations/1',
+                    (message) => {
 
-                });
+                        const data = JSON.parse(message.body);
 
-                console.log("Subscribed to /topic/chat");
+                        console.log("Received:", data);
+                    }
+                );
+
+                console.log(
+                    "Subscribed to /topic/conversations/1"
+                );
             },
 
             onWebSocketError: (error) => {
@@ -52,13 +58,24 @@
         client.activate();
     }
 
+
     function sendMessage() {
 
         client.publish({
+
             destination: '/app/chat.send',
-            body: 'Hello from WebSocket!'
+
+            body: JSON.stringify({
+
+                conversationId: 1,
+
+                senderId: 1,
+
+                content: 'Hello from Shivam!'
+            })
         });
 
+        console.log("Message sent");
     }
 
 </script>
